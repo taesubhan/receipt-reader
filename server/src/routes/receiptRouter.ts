@@ -2,6 +2,8 @@ import { Router } from 'express';
 import multer from 'multer';
 import readReceipt from '../controllers/receiptReader.js';
 
+import splitPrice from '../controllers/priceCalculator.js';
+
 const sizeLimitMB: number = 5 //in Megabytes
 const receiptRouter = Router();
 // const storage = multer.diskStorage({
@@ -53,7 +55,9 @@ receiptRouter.post('/upload', upload.single('avatar'), async (req, res) => {
     console.log('upload triggered!');
     // console.log(receipt.fields);
     res.send(receiptJSON);
-})
+});
+
+receiptRouter.post('/calculate', splitPrice);
 
 // Consider moving to error module later
 // receiptRouter.use((err, req, res, next) => {

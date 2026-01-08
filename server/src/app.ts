@@ -5,6 +5,7 @@ import express from 'express';
 import receiptRouter from './routes/receiptRouter.js';
 
 const app = express();
+app.use(express.json());
 
 app.use('/api/receipt', receiptRouter);
 

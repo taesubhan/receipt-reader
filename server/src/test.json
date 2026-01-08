@@ -1,0 +1,22 @@
+{
+    "menuItems": [
+        {
+            "menuItem": "pizza",
+            "person": ["tae"],
+            "price": 15.00
+        },
+        {
+            "menuItem": "pho",
+            "person": ["Angela", "May"],
+            "price": 21.00
+        },
+        {
+            "menuItem": "tea",
+            "person": ["May", "Thomas"],
+            "price": 7.5
+        }
+    ],
+    "tax": 4.98,
+    "tip": 6.71,
+    "fees": 0
+}
