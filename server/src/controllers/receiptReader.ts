@@ -1,5 +1,6 @@
 import DocumentIntelligence, { getLongRunningPoller, isUnexpected } from "@azure-rest/ai-document-intelligence";
 import { AzureKeyCredential } from "@azure/core-auth";
+import type { Request, Response } from 'express';
 
 // import fs from "fs/promises";
 import path from "path";
@@ -16,7 +17,7 @@ const endpoint: string | undefined = process.env.AZURE_ENDPOINT;
 
 // sample document
 
-async function readReceipt(imageBuffer: Buffer) {
+async function readReceiptImage(imageBuffer: Buffer) {
     if (!key || !endpoint) {
         throw new Error('Missing Azure environment variables');
     }
@@ -69,7 +70,51 @@ async function readReceipt(imageBuffer: Buffer) {
     return document;
 }
 
-export default readReceipt;
+function getMenuItems(receipt: any) {
+    const menuItems = [];
+    for (const { valueObject: item } of (receipt.fields.Items && receipt.fields.Items.valueArray) || []) {
+        menuItems.push({
+            menuItem: item?.Description.valueString || item?.Description.content,
+            pricePerQuantity: item?.Price?.valueCurrency.amount,
+            quantity: item?.Quantity.valueNumber || item?.Quantity.content,
+            totalPrice: item?.TotalPrice?.valueCurrency.amount
+        })
+    }
+
+    return menuItems;
+}
+
+function createReceiptJSON(receipt: any) {
+    const menuItems = getMenuItems(receipt);
+
+    const receiptJSON = {
+        merchantName: receipt.fields?.MerchantName?.valueString || receipt.fields?.MerchantName?.content,
+        items: menuItems,
+        total: receipt.fields?.Total?.valueCurrency.amount,
+        subtotal: receipt.fields?.Subtotal?.valueCurrency.amount,
+        tax: receipt.fields?.TotalTax?.valueCurrency.amount,
+        transactionDate: receipt.fields?.TransactionDate.valueDate,
+        transactionTime: receipt.fields?.TransactionTime.valueTime
+    }
+
+    return receiptJSON;
+}
+
+export default async function getReceipt(req: Request, res: Response) { 
+    const buffer = req.file?.buffer;
+    if (!buffer) {
+        throw new Error('No image file received in server');
+    }
+
+    const receipt = await readReceiptImage(buffer);
+    const receiptJSON = createReceiptJSON(receipt);
+    
+    console.log('upload triggered!');
+    // console.log(receipt.fields);
+    res.send(receiptJSON);
+}
+
+
 
 // main().catch((error) => {
 //     console.error("An error occurred:", error);

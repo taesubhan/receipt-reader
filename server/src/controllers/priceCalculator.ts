@@ -11,28 +11,23 @@ type PriceSplit = {
     [person: string]: Totals
 }
 
-export default function splitPrice(req: Request, res: Response) {
-    console.log('testing price calc');
-    const receipt = req.body;
-    if (!receipt) {
-        throw new Error('No receipt data');
-    }
+function getSubtotal(receipt: any): number {
+    let receiptSubtotal: number = 0;
+    const menuItems = receipt?.menuItems;
+    menuItems.forEach((item: any) => receiptSubtotal += item.price);
 
-    const priceSplit: PriceSplit = {};
+    return receiptSubtotal;
+}
+
+function calculateIndividualSubtotal(receipt: any, priceSplit: PriceSplit): void {
     const menuItems = receipt?.menuItems;
     if (!menuItems || menuItems.length == 0) {
         throw new Error('No menu items to split');
     }
 
-    let receiptSubtotal: number = 0;
-    const receiptTax: number = receipt?.tax || 0;
-    const receiptTip: number = receipt?.tip || 0;
-    const receiptFees: number = receipt?.fees || 0;
-
     // Calculate subtotal for each person by going through each menu item in receipt
     for (const item of menuItems) {
         const pricePerPerson: number = item.price / item.person.length;
-        receiptSubtotal += item.price;
 
         // Calculate the cost for one menu item for each person
         for (const person of item.person) {
@@ -50,6 +45,13 @@ export default function splitPrice(req: Request, res: Response) {
             }
         }
     }
+}
+
+function calculateIndividualFees(receipt: any, priceSplit: PriceSplit): void {
+    const receiptTax: number = receipt?.tax || 0;
+    const receiptTip: number = receipt?.tip || 0;
+    const receiptFees: number = receipt?.fees || 0;
+    const receiptSubtotal = getSubtotal(receipt);
 
     if (Object.keys(priceSplit).length === 0) {
         throw new Error('Missing receipt items');
@@ -67,5 +69,18 @@ export default function splitPrice(req: Request, res: Response) {
         totals.fees = priceProportion * receiptFees;
     }
 
+}
+
+export default function getPriceSplit(req: Request, res: Response): void {
+    const receipt = req.body;
+    if (!receipt) {
+        throw new Error('No receipt data');
+    }
+
+    const priceSplit: PriceSplit = {};
+    
+    calculateIndividualSubtotal(receipt, priceSplit);
+    calculateIndividualFees(receipt, priceSplit);
+    
     res.send(priceSplit);
 }
