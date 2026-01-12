@@ -5,7 +5,13 @@ import express from 'express';
 import receiptRouter from './routes/receiptRouter.js';
 
 const app = express();
-app.use(express.json());
+app.use(express.json()); // Allows backend to receive and read JSON data and comes in as JS object in req.body
+app.use(cors({
+    // origin: allowedOrigin,
+    origin: '*',
+    // methods: ['GET','POST','PUT','DELETE'],
+    // allowedHeaders: ['Content-Type','Authorization']
+}))
 
 app.use('/api/receipt', receiptRouter);
 

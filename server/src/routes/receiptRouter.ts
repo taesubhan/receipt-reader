@@ -26,7 +26,7 @@ const upload = multer({
 });
 
 // name in upload.single('name') needs to match with front-end name attribute
-receiptRouter.post('/upload', upload.single('avatar'), getReceipt);
+receiptRouter.post('/upload', upload.single('receipt-image'), getReceipt);
 receiptRouter.post('/calculate', getPriceSplit);
 
 // Consider moving to error module later
