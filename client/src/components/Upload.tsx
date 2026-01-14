@@ -1,7 +1,30 @@
 import { useState, type ChangeEvent } from 'react';
 import axios from 'axios';
 
-function Upload() {
+
+// const [inputs, setInputs] = useState<Array<ReceiptInput>>([{item:'', price: 0.00, person: ''}]);
+// const [allFees, setAllFees] = useState<Fees>({tax: 0, tip: 0, fees: 0});
+
+function getItems(items) {
+    return items.map(({menuItem, totalPrice}) => {
+        return {
+            item: menuItem,
+            price: totalPrice,
+            person: ''
+        }
+    })
+}
+
+function getFees(result) {
+    const {tax, tip, fees} = result;
+    return {
+        tax: tax || 0,
+        tip: tip || 0,
+        fees: fees || 0
+    }
+}
+
+function Upload({setInputs, setAllFees}) {
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState<string>('');
 
@@ -22,6 +45,8 @@ function Upload() {
         try {
             const response = await axios.post('http://localhost:3000/api/receipt/upload', formData);
             console.log(response);
+            setInputs(getItems(response?.data?.items));
+            setAllFees(getFees(response?.data));
             setMessage('Successful');
         } catch (err) {
             console.log(err);

@@ -7,6 +7,7 @@ import InputPrice from './components/InputPrice.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    {/* <Upload /> */}
     <InputPrice />
   </StrictMode>,
 )

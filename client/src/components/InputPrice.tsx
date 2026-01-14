@@ -2,6 +2,7 @@ import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 import DisplayResult from './DisplayResults.tsx';
+import Upload from './Upload.tsx';
 
 const apiURL = import.meta.env.VITE_API_URL
 
@@ -121,6 +122,7 @@ export default function InputPrice() {
     return (
         <div className="container">
             {getPersonsListInputBox(persons, setPersons)}
+            <Upload setInputs={setInputs} setAllFees={setAllFees}/>
             <form className="receipt-input" onSubmit={async (e) => handleSubmit(e)}>
                 {
                     inputs.map((input, index) => {
