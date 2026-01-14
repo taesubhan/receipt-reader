@@ -13,20 +13,20 @@ type PriceSplit = {
 
 function getSubtotal(receipt: any): number {
     let receiptSubtotal: number = 0;
-    const menuItems = receipt?.menuItems;
-    menuItems.forEach((item: any) => receiptSubtotal += item.price);
+    const items = receipt?.items;
+    items.forEach((item: any) => receiptSubtotal += Number(item.price));
 
     return receiptSubtotal;
 }
 
 function calculateIndividualSubtotal(receipt: any, priceSplit: PriceSplit): void {
-    const menuItems = receipt?.menuItems;
-    if (!menuItems || menuItems.length == 0) {
+    const items = receipt?.items;
+    if (!items || items.length == 0) {
         throw new Error('No menu items to split');
     }
 
     // Calculate subtotal for each person by going through each menu item in receipt
-    for (const item of menuItems) {
+    for (const item of items) {
         const pricePerPerson: number = item.price / item.person.length;
 
         // Calculate the cost for one menu item for each person
