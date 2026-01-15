@@ -27,6 +27,7 @@ function getFees(result) {
 function Upload({setInputs, setAllFees}) {
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
@@ -43,6 +44,7 @@ function Upload({setInputs, setAllFees}) {
         formData.append('receipt-image', file);
 
         try {
+            setLoading(true);
             const response = await axios.post('http://localhost:3000/api/receipt/upload', formData);
             console.log(response);
             setInputs(getItems(response?.data?.items));
@@ -51,16 +53,26 @@ function Upload({setInputs, setAllFees}) {
         } catch (err) {
             console.log(err);
             setMessage('Failed');
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <div className="container">
-            <form action="" onSubmit={handleSubmit}>
-                <input type="file" onChange={handleChange}/>
-                <button type="submit">Upload</button>
-            </form>
-            <div>{message}</div>
+            {loading 
+            ? <div className="loading-message">Loading...</div> 
+            :( 
+                <>
+                    <form action="" onSubmit={handleSubmit}>
+                        <label htmlFor="">Upload Image of Receipt: </label>
+                        <input type="file" onChange={handleChange}/>
+                        <button type="submit">Upload Receipt</button>
+                    </form>
+                    <div>{message}</div>
+                </>
+            )
+            }
         </div>
     )
 }

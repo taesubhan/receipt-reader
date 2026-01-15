@@ -121,7 +121,8 @@ export default function InputPrice() {
 
     return (
         <div className="container">
-            {getPersonsListInputBox(persons, setPersons)}
+            <h1 className="title">Price Calculator</h1>
+            {/* {getPersonsListInputBox(persons, setPersons)} */}
             <Upload setInputs={setInputs} setAllFees={setAllFees}/>
             <form className="receipt-input" onSubmit={async (e) => handleSubmit(e)}>
                 {

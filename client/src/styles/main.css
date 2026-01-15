@@ -1,0 +1,128 @@
+/* Basic reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+  
+body {
+    background: #f7f7f7;
+    padding: 20px;
+}
+
+/* Main layout */
+#root {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.container {
+    background: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* Title */
+.title {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Forms */
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+input {
+    padding: 6px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+input[type="number"] {
+    width: 100px;
+}
+
+input[type="text"] {
+    width: 180px;
+}
+
+/* Buttons */
+button {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #eee;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #e0e0e0;
+}
+
+/* Receipt input rows */
+.receipt-input {
+    margin-top: 20px;
+}
+
+.input-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+/* Fees section */
+.all-fees {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+/* Results */
+.price-calculation-results {
+    margin-top: 30px;
+}
+
+.list-of-results {
+    list-style: none;
+}
+
+.list-of-results li {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.name {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* Result rows */
+.subtotal,
+.tax,
+.tip,
+.fees,
+.total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.total {
+    font-weight: bold;
+    border-top: 1px solid #eee;
+    padding-top: 6px;
+}

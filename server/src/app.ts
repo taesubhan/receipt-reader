@@ -6,9 +6,16 @@ import receiptRouter from './routes/receiptRouter.js';
 
 const app = express();
 app.use(express.json()); // Allows backend to receive and read JSON data and comes in as JS object in req.body
+
+const allowedOrigin = ['http://localhost:5173']
 app.use(cors({
-    // origin: allowedOrigin,
-    origin: '*',
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigin.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
     // methods: ['GET','POST','PUT','DELETE'],
     // allowedHeaders: ['Content-Type','Authorization']
 }))
