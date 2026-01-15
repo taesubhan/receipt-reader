@@ -1,1 +1,1 @@
-{"version":3,"file":"receiptReader.d.ts","sourceRoot":"","sources":["../../src/controllers/receiptReader.ts"],"names":[],"mappings":"AAqBA,iBAAe,WAAW,CAAC,WAAW,EAAE,MAAM,gBAgE7C;AAED,eAAe,WAAW,CAAC"}
+{"version":3,"file":"receiptReader.d.ts","sourceRoot":"","sources":["../../src/controllers/receiptReader.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAoGjD,wBAA8B,UAAU,CAAC,GAAG,EAAE,OAAO,EAAE,GAAG,EAAE,QAAQ,iBAYnE"}

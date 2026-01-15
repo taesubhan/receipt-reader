@@ -7,13 +7,11 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const imagePath = path.resolve(__dirname, "../img/receipt2.jpg");
-// const buffer: Buffer = await fs.readFile(imagePath);
-// const base64: string = buffer.toString("base64");
 // set `<your-key>` and `<your-endpoint>` variables with the values from the Azure portal.
 const key = process.env.AZURE_KEY;
 const endpoint = process.env.AZURE_ENDPOINT;
 // sample document
-async function readReceipt(imageBuffer) {
+async function readReceiptImage(imageBuffer) {
     if (!key || !endpoint) {
         throw new Error('Missing Azure environment variables');
     }
@@ -54,18 +52,43 @@ async function readReceipt(imageBuffer) {
         throw new Error("Expected at least one document in the result.");
     }
     return document;
-    // const merchantName = document.fields.MerchantName;
-    // const Items = document.fields.Items;
-    // const Total = document.fields.Total;
-    // console.log('Type:', document.docType);
-    // console.log('Merchant:', merchantName && merchantName.valueString);
-    // console.log('Items:');
-    // for (const { valueObject: item } of (Items && Items.valueArray) || []) {
-    //     console.log(item);
-    // }
-    // console.log('Total:', Total)
 }
-export default readReceipt;
+function getMenuItems(receipt) {
+    const menuItems = [];
+    for (const { valueObject: item } of (receipt.fields.Items && receipt.fields.Items.valueArray) || []) {
+        menuItems.push({
+            menuItem: item?.Description.valueString || item?.Description.content,
+            pricePerQuantity: item?.Price?.valueCurrency.amount,
+            quantity: item?.Quantity.valueNumber || item?.Quantity.content,
+            totalPrice: item?.TotalPrice?.valueCurrency.amount
+        });
+    }
+    return menuItems;
+}
+function createReceiptJSON(receipt) {
+    const menuItems = getMenuItems(receipt);
+    const receiptJSON = {
+        merchantName: receipt.fields?.MerchantName?.valueString || receipt.fields?.MerchantName?.content,
+        items: menuItems,
+        total: receipt.fields?.Total?.valueCurrency.amount,
+        subtotal: receipt.fields?.Subtotal?.valueCurrency.amount,
+        tax: receipt.fields?.TotalTax?.valueCurrency.amount,
+        transactionDate: receipt.fields?.TransactionDate.valueDate,
+        transactionTime: receipt.fields?.TransactionTime.valueTime
+    };
+    return receiptJSON;
+}
+export default async function getReceipt(req, res) {
+    const buffer = req.file?.buffer;
+    if (!buffer) {
+        throw new Error('No image file received in server');
+    }
+    const receipt = await readReceiptImage(buffer);
+    const receiptJSON = createReceiptJSON(receipt);
+    console.log('upload triggered!');
+    // console.log(receipt.fields);
+    res.send(receiptJSON);
+}
 // main().catch((error) => {
 //     console.error("An error occurred:", error);
 //     process.exit(1);

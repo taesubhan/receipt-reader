@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
-import readReceipt from '../controllers/receiptReader.js';
+import getReceipt from '../controllers/receiptReader.js';
+import getPriceSplit from '../controllers/priceCalculator.js';
 const sizeLimitMB = 5; //in Megabytes
 const receiptRouter = Router();
 // const storage = multer.diskStorage({
@@ -20,37 +21,9 @@ const upload = multer({
         fileSize: 1024 * 1024 * sizeLimitMB
     }
 });
-receiptRouter.post('/upload', upload.single('avatar'), async (req, res) => {
-    // name in upload.single('name') needs to match with front-end name attribute
-    const buffer = req.file?.buffer;
-    if (!buffer) {
-        throw new Error('No image file received in server');
-    }
-    const receipt = await readReceipt(buffer);
-    // let items = [];
-    // for (const { valueObject: item } of (receipt.fields.Items && receipt.fields.Items.valueArray) || []) {
-    //     items.push({
-    //         menuItem: item.Description.valueString || item.Description.content,
-    //         pricePerQuantity: item.Price.valueCurrency.amount,
-    //         quantity: item.Quantity.valueNumber || item.Quantity.content,
-    //         totalPrice: item.TotalPrice.valueCurrency.amount
-    //     })
-    // }
-    // const receiptJSON = {
-    //     merchantName: receipt.fields.MerchantName?.valueString || receipt.fields.MerchantName?.content,
-    //     items: items,
-    //     total: receipt.fields.Total.valueCurrency.amount,
-    //     subtotal: receipt.fields.Subtotal.valueCurrency.amount,
-    //     tax: receipt.fields.TotalTax.valueCurrency.amount,
-    //     transactionDate: receipt.fields.TransactionDate.valueDate,
-    //     transactionTime: receipt.fields.TransactionTime.valueTime
-    // }
-    console.log('upload triggered!');
-    console.log(receipt.file);
-    res.send(receipt.file);
-    // res.send(receiptJSON);
-    // console.log('image received');
-});
+// name in upload.single('name') needs to match with front-end name attribute
+receiptRouter.post('/upload', upload.single('receipt-image'), getReceipt);
+receiptRouter.post('/calculate', getPriceSplit);
 // Consider moving to error module later
 // receiptRouter.use((err, req, res, next) => {
 //     if (err instanceof multer.MulterError) {
