@@ -1,17 +1,17 @@
 {
-    "menuItems": [
+    "items": [
         {
-            "menuItem": "pizza",
+            "item": "pizza",
             "person": ["tae"],
             "price": 15.00
         },
         {
-            "menuItem": "pho",
+            "item": "pho",
             "person": ["Angela", "May"],
             "price": 21.00
         },
         {
-            "menuItem": "tea",
+            "item": "tea",
             "person": ["May", "Thomas"],
             "price": 7.5
         }

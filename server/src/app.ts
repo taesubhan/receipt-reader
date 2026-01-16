@@ -7,7 +7,7 @@ import receiptRouter from './routes/receiptRouter.js';
 const app = express();
 app.use(express.json()); // Allows backend to receive and read JSON data and comes in as JS object in req.body
 
-const allowedOrigin = ['http://localhost:5173', 'https://taesh-price-calculator.netlify.app/']
+const allowedOrigin = ['http://localhost:5173', 'https://taesh-price-calculator.netlify.app']
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigin.indexOf(origin) !== -1) {
