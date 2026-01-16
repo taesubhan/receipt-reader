@@ -1,3 +1,13 @@
+type Value = {
+    subtotal: number, 
+    tax: number, 
+    tip: number, 
+    fees: number
+}
+
+type Results = {
+    [key: string]: Value
+}
 
 function convertToDollar(num: number) {
     const USDollar = new Intl.NumberFormat('en-US', {
@@ -8,7 +18,7 @@ function convertToDollar(num: number) {
     return USDollar.format(num);
 }
 
-function displayUsers(results) {
+function displayUsers(results: Results) {
     const persons = [];
     for (const p in results) {
         const {subtotal, tax, tip, fees} = results[p];
@@ -43,7 +53,7 @@ function displayUsers(results) {
     return persons;
 }
 
-export default function DisplayResult(result) {
+export default function DisplayResult(result: Results) {
 
     return (
         <div className="result-display">

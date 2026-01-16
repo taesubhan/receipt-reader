@@ -1,11 +1,31 @@
 import { useState, type ChangeEvent } from 'react';
 import axios from 'axios';
 
+type ReceiptItem = {
+    menuItem: string,
+    pricePerQuantity?: number,
+    quantity?: number,
+    totalPrice: number
+}
 
-// const [inputs, setInputs] = useState<Array<ReceiptInput>>([{item:'', price: 0.00, person: ''}]);
-// const [allFees, setAllFees] = useState<Fees>({tax: 0, tip: 0, fees: 0});
+type FormattedItem = {
+    item: string,
+    price: number,
+    person: string
+}
 
-function getItems(items) {
+type Fees = {
+    tax: number,
+    tip: number,
+    fees: number
+}
+
+type UploadProps = {
+    setInputs: (items: FormattedItem[]) => void,
+    setAllFees: (fees: Fees) => void
+}
+
+function getItems(items: ReceiptItem[]): FormattedItem[] {
     return items.map(({menuItem, totalPrice}) => {
         return {
             item: menuItem,
@@ -15,7 +35,8 @@ function getItems(items) {
     })
 }
 
-function getFees(result) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getFees(result: any): Fees {
     const {tax, tip, fees} = result;
     return {
         tax: tax || 0,
@@ -24,7 +45,7 @@ function getFees(result) {
     }
 }
 
-function Upload({setInputs, setAllFees}) {
+function Upload({setInputs, setAllFees}: UploadProps) {
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);

@@ -1,4 +1,4 @@
-import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import type { ChangeEvent, FormEvent /*, Dispatch, SetStateAction */ } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 import DisplayResult from './DisplayResults.tsx';
@@ -18,8 +18,12 @@ type Fees = {
     fees: number
 }
 
+type HandleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: number) => void;
+
+type HandleDelete = (i: number) => void;
+
 // function getReceiptInputBox(persons: Array<string>) {
-    function getReceiptInputBox(item = '', price = 0, person = '', index: number, handleChange, handleDelete) {
+    function getReceiptInputBox(item = '', price = 0, person = '', index: number, handleChange: HandleChange, handleDelete: HandleDelete) {
     // const personsDropDown = persons.map((person: string, index: number) => {
     //     return <option value={person} key={index}>{person}</option>
     // })
@@ -43,26 +47,27 @@ type Fees = {
     )
 }
 
-function getPersonsListInputBox(persons: Array<string>, setPersons: Dispatch<SetStateAction<string[]>>) {
+/* May use later */
+// function getPersonsListInputBox(persons: Array<string>, setPersons: Dispatch<SetStateAction<string[]>>) {
 
-    const textareaVal = persons.join('\n');
+//     const textareaVal = persons.join('\n');
 
-    function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
-        const personsText: string = e.target.value;
-        const personsArr: Array<string> = personsText.split('\n');
-        setPersons(personsArr);
-    }
+//     function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+//         const personsText: string = e.target.value;
+//         const personsArr: Array<string> = personsText.split('\n');
+//         setPersons(personsArr);
+//     }
     
-    return (
-        <form className="persons-list">
-            <label htmlFor="persons-list">Write down persons (Return after each name): </label>
-            <textarea name="persons_list" id="persons-list" value={textareaVal} onChange={(e) => handleChange(e)}></textarea>
-        </form>
-    )
-}
+//     return (
+//         <form className="persons-list">
+//             <label htmlFor="persons-list">Write down persons (Return after each name): </label>
+//             <textarea name="persons_list" id="persons-list" value={textareaVal} onChange={(e) => handleChange(e)}></textarea>
+//         </form>
+//     )
+// }
 
 export default function InputPrice() {
-    const [persons, setPersons] = useState<Array<string>>([]);
+    // const [persons, setPersons] = useState<Array<string>>([]);
     const [inputs, setInputs] = useState<Array<ReceiptInput>>([{item:'', price: 0.00, person: ''}]);
     const [allFees, setAllFees] = useState<Fees>({tax: 0, tip: 0, fees: 0});
     const [result, setResult] = useState(null);
@@ -96,7 +101,7 @@ export default function InputPrice() {
         setAllFees({...allFees, [name as keyof ReceiptInput]: Number(value)});
     }
 
-    async function handleSubmit(e: ChangeEvent<HTMLFormElement>) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const itemsPayload = {
             items: inputs.map(({ person, ...rest }) => {
