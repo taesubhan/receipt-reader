@@ -25,6 +25,8 @@ type UploadProps = {
     setAllFees: (fees: Fees) => void
 }
 
+const apiURL = import.meta.env.VITE_API_URL;
+
 function getItems(items: ReceiptItem[]): FormattedItem[] {
     return items.map(({menuItem, totalPrice}) => {
         return {
@@ -66,7 +68,7 @@ function Upload({setInputs, setAllFees}: UploadProps) {
 
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:3000/api/receipt/upload', formData);
+            const response = await axios.post(`${apiURL}/receipt/upload`, formData);
             console.log(response);
             setInputs(getItems(response?.data?.items));
             setAllFees(getFees(response?.data));
