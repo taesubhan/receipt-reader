@@ -144,7 +144,7 @@ export default function InputPrice() {
                     <label htmlFor="fees">Fees: </label>
                     <input type="number" className="fees" id="fees" name="fees" min="0" step="0.01" placeholder="0.00" value={allFees['fees']} onChange={(e) => handleFeeChange(e)}/>
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit" className="calculate-btn">Calculate Price Split</button>
             </form>
             <div className="price-calculation-results">
                 {loading ? <p>Loading...</p> : (result && DisplayResult(result))}

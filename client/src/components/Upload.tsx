@@ -93,7 +93,7 @@ function Upload({setInputs, setAllFees}: UploadProps) {
             console.log(response);
             setInputs(getItems(response?.data?.items));
             setAllFees(getFees(response?.data));
-            setMessage('Successful');
+            setMessage('Successful! Fill out who is paying for which item. If multiple people are splitting the cost of an item, separate their names with a semicolon (;)');
         } catch (err) {
             console.log(err);
             setMessage('Failed');
