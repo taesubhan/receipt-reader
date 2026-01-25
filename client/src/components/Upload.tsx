@@ -1,6 +1,9 @@
 import { useState, type ChangeEvent } from 'react';
 import axios from 'axios';
 
+const fileMaxSizeMB: number = 5;
+const allowedFileTypes: string[] = ['image/jpeg', 'image/png'];
+
 type ReceiptItem = {
     menuItem: string,
     pricePerQuantity?: number,
@@ -52,11 +55,27 @@ function Upload({setInputs, setAllFees}: UploadProps) {
     const [message, setMessage] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [fileChosen, setFileChosen] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>();
 
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
-            setFile(e.target.files[0]);
+            const targetFile = e.target.files[0];
+            console.log(targetFile);
+            if (targetFile.size > (fileMaxSizeMB * 1024 * 1024)) {
+                setError('File size too large');
+                e.target.value = "";
+                setFile(null);
+                return;
+            } else if (!allowedFileTypes.includes(targetFile.type)) {
+                setError('File must be .jpg or .png');
+                e.target.value = "";
+                setFile(null);
+                return;
+            }
+
+            setFile(targetFile);
             setFileChosen(true);
+            setError(null);
         }
     }
 
@@ -90,12 +109,10 @@ function Upload({setInputs, setAllFees}: UploadProps) {
             :( 
                 <>
                     <form action="" onSubmit={handleSubmit}>
-                        <label htmlFor="">Upload Image of Receipt: </label>
+                        <label htmlFor="">Upload image of a receipt (5MB max): </label>
                         <input type="file" onChange={handleChange}/>
-                        { fileChosen
-                            ? <button type="submit">Upload Receipt</button>
-                            : null
-                        }
+                        { error && <div className="error-message">{error}</div> }
+                        { fileChosen && <button type="submit">Analyze Receipt</button> }
                     </form>
                     <div>{message}</div>
                 </>

@@ -19,10 +19,8 @@ type Fees = {
 }
 
 type HandleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: number) => void;
-
 type HandleDelete = (i: number) => void;
 
-// function getReceiptInputBox(persons: Array<string>) {
 function getReceiptInputBox(item = '', price = 0, person = '', index: number, handleChange: HandleChange, handleDelete: HandleDelete) {
     // const personsDropDown = persons.map((person: string, index: number) => {
     //     return <option value={person} key={index}>{person}</option>
@@ -111,7 +109,6 @@ export default function InputPrice() {
         }
         
         const url = apiURL + '/receipt/calculate';
-        // console.log(itemsPayload);
         try {
             setLoading(true);
             const response = await axios.post(url, itemsPayload);

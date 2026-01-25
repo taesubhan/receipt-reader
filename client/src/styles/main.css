@@ -36,6 +36,10 @@ form {
     margin-bottom: 20px;
 }
 
+.error-message {
+    color: red;
+}
+
 label {
     font-size: 14px;
     margin-right: 6px;
