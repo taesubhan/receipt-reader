@@ -51,10 +51,12 @@ function Upload({setInputs, setAllFees}: UploadProps) {
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [fileChosen, setFileChosen] = useState<boolean>(false);
 
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
             setFile(e.target.files[0]);
+            setFileChosen(true);
         }
     }
 
@@ -90,7 +92,10 @@ function Upload({setInputs, setAllFees}: UploadProps) {
                     <form action="" onSubmit={handleSubmit}>
                         <label htmlFor="">Upload Image of Receipt: </label>
                         <input type="file" onChange={handleChange}/>
-                        <button type="submit">Upload Receipt</button>
+                        { fileChosen
+                            ? <button type="submit">Upload Receipt</button>
+                            : null
+                        }
                     </form>
                     <div>{message}</div>
                 </>

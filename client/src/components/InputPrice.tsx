@@ -23,7 +23,7 @@ type HandleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: nu
 type HandleDelete = (i: number) => void;
 
 // function getReceiptInputBox(persons: Array<string>) {
-    function getReceiptInputBox(item = '', price = 0, person = '', index: number, handleChange: HandleChange, handleDelete: HandleDelete) {
+function getReceiptInputBox(item = '', price = 0, person = '', index: number, handleChange: HandleChange, handleDelete: HandleDelete) {
     // const personsDropDown = persons.map((person: string, index: number) => {
     //     return <option value={person} key={index}>{person}</option>
     // })
@@ -126,7 +126,7 @@ export default function InputPrice() {
 
     return (
         <div className="container">
-            <h1 className="title">Price Calculator</h1>
+            <h1 className="title">Receipt Splitter</h1>
             {/* {getPersonsListInputBox(persons, setPersons)} */}
             <Upload setInputs={setInputs} setAllFees={setAllFees}/>
             <form className="receipt-input" onSubmit={async (e) => handleSubmit(e)}>
@@ -135,7 +135,7 @@ export default function InputPrice() {
                         return getReceiptInputBox(input.item, input.price, input.person, index, handleChange, handleDelete);
                     })
                 }
-                <button type="button" onClick={handleAdd}>Add Input</button>
+                <button type="button" onClick={handleAdd}>+ Add Item</button>
 
                 <div className="all-fees">
                     <label htmlFor="tax">Tax: </label>
