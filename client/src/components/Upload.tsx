@@ -57,6 +57,7 @@ function Upload({setInputs, setAllFees}: UploadProps) {
     const [fileChosen, setFileChosen] = useState<boolean>(false);
     const [error, setError] = useState<string | null>();
 
+    // Upload image file to input
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
             const targetFile = e.target.files[0];
@@ -79,6 +80,7 @@ function Upload({setInputs, setAllFees}: UploadProps) {
         }
     }
 
+    // Submit image file to server
     async function handleSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!file) return alert('Please select a file');

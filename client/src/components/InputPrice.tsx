@@ -8,20 +8,20 @@ const apiURL = import.meta.env.VITE_API_URL
 
 type ReceiptInput = {
     item: string, 
-    price: number, 
+    price: number | string, 
     person: string
 }
 
 type Fees = {
-    tax: number,
-    tip: number,
-    fees: number
+    tax: number | string,
+    tip: number | string,
+    fees: number | string
 }
 
 type HandleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: number) => void;
 type HandleDelete = (i: number) => void;
 
-function getReceiptInputBox(item = '', price = 0, person = '', index: number, handleChange: HandleChange, handleDelete: HandleDelete) {
+function getReceiptInputBox(item = '', price: number | string = '', person = '', index: number, handleChange: HandleChange, handleDelete: HandleDelete) {
     // const personsDropDown = persons.map((person: string, index: number) => {
     //     return <option value={person} key={index}>{person}</option>
     // })
@@ -66,15 +66,14 @@ function getReceiptInputBox(item = '', price = 0, person = '', index: number, ha
 
 export default function InputPrice() {
     // const [persons, setPersons] = useState<Array<string>>([]);
-    const [inputs, setInputs] = useState<Array<ReceiptInput>>([{item:'', price: 0.00, person: ''}]);
-    const [allFees, setAllFees] = useState<Fees>({tax: 0, tip: 0, fees: 0});
+    const [inputs, setInputs] = useState<Array<ReceiptInput>>([{item:'', price: '', person: ''}]);
+    const [allFees, setAllFees] = useState<Fees>({tax: '', tip: '', fees: ''});
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    function handleAdd() {
-        const newInputs = [...inputs, {item:'', price: 0.00, person: ''}];
+    function handleAddItemInput() {
+        const newInputs = [...inputs, {item:'', price: '', person: ''}];
         setInputs(newInputs);
-        console.log(newInputs);
     }
 
     function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: number) {
@@ -96,7 +95,7 @@ export default function InputPrice() {
 
     function handleFeeChange(e: ChangeEvent<HTMLInputElement>) {
         const {name, value} = e.target;
-        setAllFees({...allFees, [name as keyof ReceiptInput]: Number(value)});
+        setAllFees({...allFees, [name as keyof ReceiptInput]: value});
     }
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -112,7 +111,6 @@ export default function InputPrice() {
         try {
             setLoading(true);
             const response = await axios.post(url, itemsPayload);
-            console.log(response);
             setResult(response.data);
         } catch(err) {
             console.log(err);
@@ -132,7 +130,7 @@ export default function InputPrice() {
                         return getReceiptInputBox(input.item, input.price, input.person, index, handleChange, handleDelete);
                     })
                 }
-                <button type="button" onClick={handleAdd}>+ Add Item</button>
+                <button type="button" onClick={handleAddItemInput}>+ Add Item</button>
 
                 <div className="all-fees">
                     <label htmlFor="tax">Tax: </label>
