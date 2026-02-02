@@ -1,23 +1,17 @@
-import type { ChangeEvent, FormEvent /*, Dispatch, SetStateAction */ } from 'react';
+import type { ChangeEvent, FormEvent, Dispatch, SetStateAction } from 'react';
+import type {ReceiptInput, Fees} from '../types/receipt.ts';
 import { useState } from 'react';
 import axios from 'axios';
 import DisplayResult from './DisplayResults.tsx';
-import Upload from './Upload.tsx';
 
 const apiURL = import.meta.env.VITE_API_URL
 
-type ReceiptInput = {
-    item: string, 
-    price: number | string, 
-    person: string
-}
-
-type Fees = {
-    tax: number | string,
-    tip: number | string,
-    fees: number | string
-}
-
+type Props = {
+    inputs: ReceiptInput[],
+    setInputs: Dispatch<SetStateAction<ReceiptInput[]>>,
+    allFees: Fees,
+    setAllFees: Dispatch<SetStateAction<Fees>>,
+};
 type HandleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: number) => void;
 type HandleDelete = (i: number) => void;
 
@@ -45,38 +39,18 @@ function getReceiptInputBox(item = '', price: number | string = '', person = '',
     )
 }
 
-/* May use later */
-// function getPersonsListInputBox(persons: Array<string>, setPersons: Dispatch<SetStateAction<string[]>>) {
-
-//     const textareaVal = persons.join('\n');
-
-//     function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
-//         const personsText: string = e.target.value;
-//         const personsArr: Array<string> = personsText.split('\n');
-//         setPersons(personsArr);
-//     }
-    
-//     return (
-//         <form className="persons-list">
-//             <label htmlFor="persons-list">Write down persons (Return after each name): </label>
-//             <textarea name="persons_list" id="persons-list" value={textareaVal} onChange={(e) => handleChange(e)}></textarea>
-//         </form>
-//     )
-// }
-
-export default function InputPrice() {
-    // const [persons, setPersons] = useState<Array<string>>([]);
-    const [inputs, setInputs] = useState<Array<ReceiptInput>>([{item:'', price: '', person: ''}]);
-    const [allFees, setAllFees] = useState<Fees>({tax: '', tip: '', fees: ''});
+export default function InputPrice({inputs, setInputs, allFees, setAllFees}: Props) {
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    function handleAddItemInput() {
+    console.log(allFees);
+
+    function handleAddItem() {
         const newInputs = [...inputs, {item:'', price: '', person: ''}];
         setInputs(newInputs);
     }
 
-    function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: number) {
+    function handleChangeItem(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, i: number) {
         const {name, value} = e.target;
         const data = inputs.map((input, index) => {
             if (i === index) {
@@ -87,18 +61,18 @@ export default function InputPrice() {
         setInputs(data);
     }
 
-    function handleDelete(i: number) {
+    function handleDeleteItem(i: number) {
         const newInputs = [...inputs];
         newInputs.splice(i, 1)
         setInputs(newInputs);
     }
 
-    function handleFeeChange(e: ChangeEvent<HTMLInputElement>) {
+    function handleChangeFees(e: ChangeEvent<HTMLInputElement>) {
         const {name, value} = e.target;
         setAllFees({...allFees, [name as keyof ReceiptInput]: value});
     }
 
-    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    async function handleSubmitItems(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const itemsPayload = {
             items: inputs.map(({ person, ...rest }) => {
@@ -120,27 +94,24 @@ export default function InputPrice() {
     }
 
     return (
-        <div className="container">
-            <h1 className="title">Receipt Splitter</h1>
-            {/* {getPersonsListInputBox(persons, setPersons)} */}
-            <Upload setInputs={setInputs} setAllFees={setAllFees}/>
-            <form className="receipt-input" onSubmit={async (e) => handleSubmit(e)}>
+        <div className="input-container">
+            <form className="receipt-input" onSubmit={async (e) => handleSubmitItems(e)}>
                 {
                     inputs.map((input, index) => {
-                        return getReceiptInputBox(input.item, input.price, input.person, index, handleChange, handleDelete);
+                        return getReceiptInputBox(input.item, input.price, input.person, index, handleChangeItem, handleDeleteItem);
                     })
                 }
-                <button type="button" onClick={handleAddItemInput}>+ Add Item</button>
+                <button type="button" onClick={handleAddItem}>+ Add Item</button>
 
                 <div className="all-fees">
                     <label htmlFor="tax">Tax: </label>
-                    <input type="number" className="tax" id="tax" name="tax" min="0" step="0.01" placeholder="0.00" value={allFees['tax']} onChange={(e) => handleFeeChange(e)}/>
+                    <input type="number" className="tax" id="tax" name="tax" min="0" step="0.01" placeholder="0.00" value={allFees['tax']} onChange={(e) => handleChangeFees(e)}/>
 
                     <label htmlFor="tip">Tip: </label>
-                    <input type="number" className="tip" id="tip" name="tip" min="0" step="0.01" placeholder="0.00" value={allFees['tip']} onChange={(e) => handleFeeChange(e)}/>
+                    <input type="number" className="tip" id="tip" name="tip" min="0" step="0.01" placeholder="0.00" value={allFees['tip']} onChange={(e) => handleChangeFees(e)}/>
 
                     <label htmlFor="fees">Fees: </label>
-                    <input type="number" className="fees" id="fees" name="fees" min="0" step="0.01" placeholder="0.00" value={allFees['fees']} onChange={(e) => handleFeeChange(e)}/>
+                    <input type="number" className="fees" id="fees" name="fees" min="0" step="0.01" placeholder="0.00" value={allFees['fees']} onChange={(e) => handleChangeFees(e)}/>
                 </div>
                 <button type="submit" className="calculate-btn">Calculate Price Split</button>
             </form>
@@ -150,3 +121,24 @@ export default function InputPrice() {
         </div>
     )
 }
+
+
+
+/* May use later */
+// function getPersonsListInputBox(persons: Array<string>, setPersons: Dispatch<SetStateAction<string[]>>) {
+
+//     const textareaVal = persons.join('\n');
+
+//     function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+//         const personsText: string = e.target.value;
+//         const personsArr: Array<string> = personsText.split('\n');
+//         setPersons(personsArr);
+//     }
+    
+//     return (
+//         <form className="persons-list">
+//             <label htmlFor="persons-list">Write down persons (Return after each name): </label>
+//             <textarea name="persons_list" id="persons-list" value={textareaVal} onChange={(e) => handleChange(e)}></textarea>
+//         </form>
+//     )
+// }
