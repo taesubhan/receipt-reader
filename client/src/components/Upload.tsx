@@ -14,7 +14,7 @@ type ReceiptItem = {
 type FormattedItem = {
     item: string,
     price: number,
-    person: string
+    person: string[]
 }
 
 type Fees = {
@@ -30,12 +30,13 @@ type UploadProps = {
 
 const apiURL = import.meta.env.VITE_API_URL;
 
+// Retrieve desired receipt data from Azure API response
 function getItems(items: ReceiptItem[]): FormattedItem[] {
     return items.map(({menuItem, totalPrice}) => {
         return {
             item: menuItem,
             price: totalPrice,
-            person: ''
+            person: [] // The receipt does not have info on who's paying what, the user will have to input that
         }
     })
 }
@@ -95,7 +96,7 @@ function Upload({setInputs, setAllFees}: UploadProps) {
             console.log(response);
             setInputs(getItems(response?.data?.items));
             setAllFees(getFees(response?.data));
-            setMessage('Successful! Fill out who is paying for which item. If multiple people are splitting the cost of an item, separate their names with a semicolon (;)');
+            setMessage('Successful!');
         } catch (err) {
             console.log(err);
             setMessage('Failed');

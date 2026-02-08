@@ -1,7 +1,7 @@
 export type ReceiptInput = {
     item: string, 
     price: number | string, 
-    person: string
+    person: string[]
 }
 
 export type Fees = {
@@ -9,3 +9,5 @@ export type Fees = {
     tip: number | string,
     fees: number | string
 }
+
+export type Persons = string[]
