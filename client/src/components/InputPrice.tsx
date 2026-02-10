@@ -35,19 +35,45 @@ type HandleDelete = (i: number) => void;
 type HandleChangePersons = (personOption: string, i: number) => void;
 
 function PersonsCheckbox({personsOptions, selectedPersons, toggleOption, inputIndex}: PersonsCheckbox) {
+    const [dropDownOpen, setDropDownOpen] = useState<boolean>(false);
+
+    function handleToggle() {
+        setDropDownOpen((prev) => !prev);
+    }
+
+    function dropDownText() {
+        if (!dropDownOpen && selectedPersons.length > 0) {
+            return selectedPersons.join(', ') 
+        } else if (!dropDownOpen) {
+            return 'Select Options'
+        } else {
+            return ''
+        }
+    }
 
     return (
-        <div>
-            {personsOptions.map((person, index) => (
-                <label key={person + index} style={{ display: "block" }}>
-                <input
-                    type="checkbox"
-                    checked={selectedPersons.includes(person)}
-                    onChange={() => toggleOption(person, inputIndex)}
-                />
-                {person}
-                </label>
-            ))}
+        <div className="name-dropdown">
+            <button className="toggle-name-dropdown" onClick={handleToggle}>
+                {dropDownOpen ? '^' : '⌄'}
+            </button>
+            {dropDownText()}
+
+            {
+                dropDownOpen && 
+                <div>
+                    {personsOptions.map((person, index) => (
+                        <label key={person + index} style={{ display: "block" }}>
+                        <input
+                            type="checkbox"
+                            checked={selectedPersons.includes(person)}
+                            onChange={() => toggleOption(person, inputIndex)}
+                        />
+                        {person}
+                        </label>
+                    ))}
+                </div>
+            }
+            
         </div>
     )
 }
@@ -65,12 +91,6 @@ function ReceiptInputBox({input, index, personsOptions, onChange, onDelete, onCh
             <input type="number" className="receipt-price" id={`receipt-price-${index}`} name="price" min="0" step="0.01" placeholder="0.00" value={price} onChange={(e) => onChange(e, index)}/>
 
             <PersonsCheckbox personsOptions={personsOptions} selectedPersons={person} toggleOption={onChangePersons} inputIndex={index} />
-
-            {/* <label htmlFor={`receipt-person-${index}`}>Person: </label>
-            <input type="text" id={`receipt-person-${index}`} name="person" value={person} onChange={(e) => handleChange(e, index)}/> */}
-            {/* <select className="receipt-person" id="receipt-person" name="receipt_person">
-                {personsDropDown}
-            </select> */}
 
             <button type="button" onClick={() => onDelete(index)}>Delete</button>
         </div>
@@ -99,14 +119,6 @@ export default function InputPrice({inputs, setInputs, allFees, setAllFees, pers
     }
 
     function handleChangePersons(personOption: string, i: number) {
-        // const newSelectedPersons = selectedPersons.includes(personOption) 
-        //     ? selectedPersons.filter((person) => person !== personOption)
-        //     : [...selectedPersons, personOption]
-
-        // const newInput = [...inputs]
-        // newInput[i][`person`] = newSelectedPersons;
-
-        // setInputs(newInput);
 
         setInputs((prev) => {
             return prev.map((input, index) => {

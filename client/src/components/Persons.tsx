@@ -4,7 +4,8 @@ import { useState } from 'react';
 
 type PersonsInput = {
     personsOptions: Persons,
-    setPersonsOptions: Dispatch<SetStateAction<Persons>>
+    setPersonsOptions: Dispatch<SetStateAction<Persons>>,
+    onDeleteFromPersonsOption: (name: string) => void
 }
 
 type PersonsBox = {
@@ -28,7 +29,7 @@ function PersonsBox({personsOptions, deletePerson}: PersonsBox) {
     )
 }
 
-export default function PersonsInput({personsOptions, setPersonsOptions}: PersonsInput) {
+export default function PersonsInput({personsOptions, setPersonsOptions, onDeleteFromPersonsOption}: PersonsInput) {
     const [personTyped, setPersonTyped] = useState<string>('');
 
     function handleChangeInput(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
@@ -43,9 +44,9 @@ export default function PersonsInput({personsOptions, setPersonsOptions}: Person
     }
 
     function handleDeletePerson(i: number) {
-        const newPersonsOptions = [...personsOptions];
-        newPersonsOptions.splice(i, 1);
+        const newPersonsOptions = personsOptions.filter((person, index) => index !== i);
         setPersonsOptions(newPersonsOptions);
+        onDeleteFromPersonsOption(personsOptions[i]);
     }
 
     return (

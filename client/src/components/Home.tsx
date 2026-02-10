@@ -9,12 +9,22 @@ export default function Home() {
     const [allFees, setAllFees] = useState<Fees>({tax: '', tip: '', fees: ''});
     const [personsOptions, setPersonsOptions] = useState<Persons>([]);
 
+    function deletePersonFromInput(name: string) {
+        setInputs((prevInputs) => {
+            return prevInputs.map((input) => {
+                input.person = input.person.filter((personOption) => personOption !== name);
+                return input;
+            })
+        })
+        
+    }
+
     return (
         <div className="container">
             <h1 className="title">Receipt Splitter</h1>
             {/* {getPersonsListInputBox(persons, setPersons)} */}
             <Upload setInputs={setInputs} setAllFees={setAllFees} />
-            <PersonsInput personsOptions={personsOptions} setPersonsOptions={setPersonsOptions} />
+            <PersonsInput personsOptions={personsOptions} setPersonsOptions={setPersonsOptions} onDeleteFromPersonsOption={deletePersonFromInput}/>
             <InputPrice inputs={inputs} setInputs={setInputs} allFees={allFees} setAllFees={setAllFees} personsOptions={personsOptions} />
         </div>
     )
