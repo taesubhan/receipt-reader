@@ -44,7 +44,7 @@ export default function PersonsInput({personsOptions, setPersonsOptions, onDelet
     }
 
     function handleDeletePerson(i: number) {
-        const newPersonsOptions = personsOptions.filter((person, index) => index !== i);
+        const newPersonsOptions = personsOptions.filter((_, index) => index !== i);
         setPersonsOptions(newPersonsOptions);
         onDeleteFromPersonsOption(personsOptions[i]);
     }
