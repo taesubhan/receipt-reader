@@ -52,9 +52,9 @@ export default function PersonsInput({personsOptions, setPersonsOptions, onDelet
     return (
         <div className="persons-container">
             <form action="" className="persons-submit" onSubmit={handleSubmitPerson}>
-                <label htmlFor="person-name">Input names: </label>
-                <input type="text" value={personTyped} onChange={handleChangeInput}/>
-                <input type="submit" />
+                <label htmlFor="person-name" className="">Input names: </label>
+                <input type="text" value={personTyped} onChange={handleChangeInput} className="payer-name-input"/>
+                <input type="submit" className="input-person-name-btn button" />
             </form>
             <PersonsBox personsOptions={personsOptions} deletePerson={handleDeletePerson}/>
         </div>

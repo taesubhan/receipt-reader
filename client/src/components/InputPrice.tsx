@@ -3,6 +3,7 @@ import type {ReceiptInput, Fees, Persons} from '../types/receipt.ts';
 import { useState } from 'react';
 import axios from 'axios';
 import DisplayResult from './DisplayResults.tsx';
+import trashIcon from '../assets/trash-can.svg';
 
 const apiURL = import.meta.env.VITE_API_URL
 
@@ -43,9 +44,11 @@ function PersonsCheckbox({personsOptions, selectedPersons, toggleOption, inputIn
 
     function dropDownText() {
         if (!dropDownOpen && selectedPersons.length > 0) {
-            return selectedPersons.join(', ') 
+            return selectedPersons.join(', ')
         } else if (!dropDownOpen) {
             return 'Select Options'
+        } else if (personsOptions.length === 0) {
+            return 'No options'
         } else {
             return ''
         }
@@ -84,15 +87,21 @@ function ReceiptInputBox({input, index, personsOptions, onChange, onDelete, onCh
 
     return (
         <div className="input-box" key={index}>
-            <label htmlFor={`receipt-item-${index}`}>Menu item: </label>
-            <input type="text" className="receipt-item" id={`receipt-item-${index}`} name="item" value={item} onChange={(e) => onChange(e, index)}/>
-            
-            <label htmlFor={`receipt-price-${index}`}>Price: </label>
-            <input type="number" className="receipt-price" id={`receipt-price-${index}`} name="price" min="0" step="0.01" placeholder="0.00" value={price} onChange={(e) => onChange(e, index)}/>
+            <div className="item-description-price-input input-top-half">
+                <label htmlFor={`receipt-item-${index}`} className="receipt-item-label">Menu item: </label>
+                <input type="text" className="receipt-item" id={`receipt-item-${index}`} name="item" value={item} onChange={(e) => onChange(e, index)}/>
+                
+                <label htmlFor={`receipt-price-${index}`} className="receipt-price-label">Price: </label>
+                <input type="number" className="receipt-price" id={`receipt-price-${index}`} name="price" min="0" step="0.01" placeholder="0.00" value={price} onChange={(e) => onChange(e, index)}/>
+            </div>
 
-            <PersonsCheckbox personsOptions={personsOptions} selectedPersons={person} toggleOption={onChangePersons} inputIndex={index} />
-
-            <button type="button" onClick={() => onDelete(index)}>Delete</button>
+            <div className="input-bottom-half">
+                <PersonsCheckbox personsOptions={personsOptions} selectedPersons={person} toggleOption={onChangePersons} inputIndex={index} />
+                
+                <button type="button" className="delete-input-btn" onClick={() => onDelete(index)}>
+                    <img className="trash-icon" src={trashIcon} alt="" />
+                </button>
+            </div>
         </div>
     )
 }
@@ -178,22 +187,22 @@ export default function InputPrice({inputs, setInputs, allFees, setAllFees, pers
                     ))
 
                 }
-                <button type="button" onClick={handleAddItem}>+ Add Item</button>
+                <button type="button" onClick={handleAddItem} className="add-item-btn">+ Add Item</button>
 
                 <div className="all-fees">
-                    <label htmlFor="tax">Tax: </label>
+                    <label htmlFor="tax" className="fee-label">Tax: </label>
                     <input type="number" className="tax" id="tax" name="tax" min="0" step="0.01" placeholder="0.00" value={allFees['tax']} onChange={(e) => handleChangeFees(e)}/>
 
-                    <label htmlFor="tip">Tip: </label>
+                    <label htmlFor="tip" className="fee-label">Tip: </label>
                     <input type="number" className="tip" id="tip" name="tip" min="0" step="0.01" placeholder="0.00" value={allFees['tip']} onChange={(e) => handleChangeFees(e)}/>
 
-                    <label htmlFor="fees">Fees: </label>
+                    <label htmlFor="fees" className="fee-label">Fees: </label>
                     <input type="number" className="fees" id="fees" name="fees" min="0" step="0.01" placeholder="0.00" value={allFees['fees']} onChange={(e) => handleChangeFees(e)}/>
                 </div>
                 <button type="submit" className="calculate-btn">Calculate Price Split</button>
             </form>
             <div className="price-calculation-results">
-                {loading ? <p>Loading...</p> : (result && DisplayResult(result))}
+                {loading ? <div className="loading-spinner"></div> : (result && DisplayResult(result))}
             </div>
         </div>
     )

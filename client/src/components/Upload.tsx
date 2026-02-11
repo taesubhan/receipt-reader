@@ -108,16 +108,16 @@ function Upload({setInputs, setAllFees}: UploadProps) {
     return (
         <div className="container">
             {loading 
-            ? <div className="loading-message">Loading...</div> 
+            ? <div className="loading-spinner"></div> 
             :( 
                 <>
                     <form action="" onSubmit={handleSubmit}>
-                        <label htmlFor="">Upload image of a receipt (5MB max): </label>
-                        <input type="file" onChange={handleChange}/>
+                        <label htmlFor="" className="upload-receipt-label">Upload image of a receipt (5MB max): </label>
+                        <input type="file" onChange={handleChange} className="upload-receipt-input"/>
                         { error && <div className="error-message">{error}</div> }
-                        { fileChosen && <button type="submit">Analyze Receipt</button> }
+                        { fileChosen && <button type="submit" className="scan-receipt-btn">Scan Receipt</button> }
                     </form>
-                    <div>{message}</div>
+                    <div className="receipt-scan-results">{message}</div>
                 </>
             )
             }
